@@ -25,13 +25,14 @@ wss.on('connection', function(ws) {
   ws.send(Buffer.from([0, clientCount]));
   clients.set(ws, clientCount);  
   clientCount++;
+  //send all other players data to new join
   wss.clients.forEach(client => {
-    if (client !== ws && client.readyState === WebSocket.OPEN) {
+    if (client != ws) {
       safeSend(ws,Buffer.from([2]));
     }
   });
-  safeSend(ws,Buffer.from([3]));
   JoinGame(ws);
+  safeSend(ws,Buffer.from([3]));
   // send "hello world" interval
   ws.on('message', function(data) {
     if (data.length > 0) {
@@ -68,7 +69,7 @@ wss.on('connection', function(ws) {
         }
       } else if (header == 3) {//ready
           readyCount++;
-          //console.log("Ready: "+readyCount);
+          console.log("Ready: "+readyCount);
           if(readyCount==clientCount) {//all ready
             playerCount=clientCount;
             readyCount=0;
@@ -101,7 +102,6 @@ function JoinGame(ws) {
 }
 function Reset() {
   SendAll(Buffer.from([6]));
-  votes = [0,0,0,0,0,0];
 }
 function SendOthers(ws,payload) {
   wss.clients.forEach(client => {
