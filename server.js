@@ -28,6 +28,7 @@ wss.on('connection', function(ws) {
   //send all other players data to new join
   wss.clients.forEach(client => {
     if (client != ws) {
+      console.log("Sent Join to "+clients.get(client));
       safeSend(ws,Buffer.from([2]));
     }
   });
