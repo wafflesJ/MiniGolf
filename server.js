@@ -92,6 +92,8 @@ wss.on('connection', function(ws) {
         wss.clients.forEach(client => {
           if (client != ws) {
             console.log("Sent Join to "+clients.get(client));
+            console.log(colours);
+            console.log(clients[client]);
             const col = colours[clients[client]];
             console.log(col);
             safeSend(ws,Buffer.from([2,col[0],col[1],col[2]]));
