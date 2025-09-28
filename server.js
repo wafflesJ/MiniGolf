@@ -80,12 +80,15 @@ wss.on('connection', function(ws) {
             finishedPlayers = [];
             places= [];
             turn=0;
-            SendAll(Buffer.from([7,1]));
+            let maxVote = randomMaxIndex(votes);
+            console.log(maxVote);
+            SendAll(Buffer.from([7,maxVote]));
             console.log(votes);
           }
       } else if (header == 4) {//vote
         votes[data[1]]++;
-        votes[data[2]]--;
+        if(data[2]!=255)
+          votes[data[2]]--;
       }
     }
   });
@@ -97,6 +100,20 @@ wss.on('connection', function(ws) {
     readyCount=0;
   });
 });
+function randomMaxIndex(arr) {
+  if (arr.length === 0) return -1; // handle empty array
+
+  // Find the maximum value
+  const max = Math.max(...arr);
+
+  // Collect all indices where the value is equal to the max
+  const indices = arr
+    .map((num, i) => num === max ? i : -1)
+    .filter(i => i !== -1);
+
+  // Pick one index randomly
+  return indices[Math.floor(Math.random() * indices.length)];
+}
 function JoinGame(ws) {
   SendOthers(ws,Buffer.from([2]));
   safeSend(ws,Buffer.from([8]));
