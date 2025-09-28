@@ -99,7 +99,7 @@ wss.on('connection', function(ws) {
 });
 function JoinGame(ws) {
   SendOthers(ws,Buffer.from([2]));
-  
+  safeSend(ws,Buffer.from([8]));
 }
 function Reset() {
   SendAll(Buffer.from([6]));
