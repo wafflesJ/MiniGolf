@@ -92,8 +92,8 @@ wss.on('connection', function(ws) {
 
   ws.on('close', function() {
     console.log("Client left.");
-    //SendAll(Buffer.from([5,clients.get(ws)]));
-    //clientCount--;
+    SendAll(Buffer.from([5,clients.get(ws)]));
+    clientCount--;
     readyCount=0;
   });
 });
