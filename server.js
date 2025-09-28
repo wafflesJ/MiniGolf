@@ -80,7 +80,7 @@ wss.on('connection', function(ws) {
             finishedPlayers = [];
             places= [];
             turn=0;
-            let maxVote = randomMaxIndex(votes);
+            let maxVote = randomMaxIndex(votes)+1;
             console.log(maxVote);
             SendAll(Buffer.from([7,maxVote]));
             console.log(votes);
