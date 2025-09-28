@@ -20,7 +20,7 @@ let places = [];
 let round =-1;
 let votes = [0,0,0,0,0,0];
 let colours = [];
-const clients = new Map();
+const clientMap = new Map();
 wss.on('connection', function(ws) {
   console.log("Client joined.");
   
@@ -81,7 +81,7 @@ wss.on('connection', function(ws) {
           votes[data[2]]--;
       } else if (header == 5) { //JOIN
         ws.send(Buffer.from([0, clientCount]));
-        clients.set(ws, clientCount);  
+        clientMap.set(ws, clientCount);  
         const colour = [data[1],data[2],data[3]];
         console.log(colour);
         colours[clientCount] = colour;
@@ -93,8 +93,8 @@ wss.on('connection', function(ws) {
           if (client != ws) {
             console.log("Sent Join to "+clients.get(client));
             console.log(colours);
-            console.log(clients[client]);
-            const col = colours[clients[client]];
+            console.log(clientMap[client]);
+            const col = colours[clientMap[client]];
             console.log(col);
             safeSend(ws,Buffer.from([2,col[0],col[1],col[2]]));
           }
