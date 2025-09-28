@@ -35,7 +35,7 @@ wss.on('connection', function(ws) {
         SendOthers(ws,data);
       } else if (header == 2) {//done turn
         if(data[1] == 1) {//finsished
-          const id = clients.get(ws);
+          const id = clientMap.get(ws);
           finishedPlayers.push(id);
           if(round!=cycle) {
             round=cycle;
@@ -91,10 +91,10 @@ wss.on('connection', function(ws) {
         //send all other players data to new join
         wss.clients.forEach(client => {
           if (client != ws) {
-            console.log("Sent Join to "+clients.get(client));
+            console.log("Sent Join to "+clientMap.get(client));
             console.log(colours);
-            console.log(clientMap[client]);
-            const col = colours[clientMap[client]];
+            console.log(clientMap.get(client));
+            const col = colours[clientMap.get(client)];
             console.log(col);
             safeSend(ws,Buffer.from([2,col[0],col[1],col[2]]));
           }
@@ -107,7 +107,7 @@ wss.on('connection', function(ws) {
 
   ws.on('close', function() {
     console.log("Client left.");
-    SendAll(Buffer.from([5,clients.get(ws)]));
+    SendAll(Buffer.from([5,clientMap.get(ws)]));
     clientCount--;
     readyCount=0;
   });
