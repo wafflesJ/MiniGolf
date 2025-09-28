@@ -83,6 +83,7 @@ wss.on('connection', function(ws) {
         ws.send(Buffer.from([0, clientCount]));
         clients.set(ws, clientCount);  
         const colour = [data[1],data[2],data[3]];
+        console.log(colour);
         colours[clientCount] = colour;
         clientCount++;
         //send all other players data to new join
