@@ -19,22 +19,12 @@ let finishedPlayers = [];
 let places = [];
 let round =-1;
 let votes = [0,0,0,0,0,0];
+let colours = [];
 const clients = new Map();
 wss.on('connection', function(ws) {
   console.log("Client joined.");
-  ws.send(Buffer.from([0, clientCount]));
-  clients.set(ws, clientCount);  
-  clientCount++;
-  //send all other players data to new join
-  wss.clients.forEach(client => {
-    if (client != ws) {
-      console.log("Sent Join to "+clients.get(client));
-      safeSend(ws,Buffer.from([2]));
-    }
-  });
-  JoinGame(ws);
-  safeSend(ws,Buffer.from([3]));
-  // send "hello world" interval
+  
+  //interval
   ws.on('message', function(data) {
     if (data.length > 0) {
       const header = data[0];
@@ -89,6 +79,22 @@ wss.on('connection', function(ws) {
         votes[data[1]]++;
         if(data[2]!=255)
           votes[data[2]]--;
+      } else if (header == 5) { //JOIN
+        ws.send(Buffer.from([0, clientCount]));
+        clients.set(ws, clientCount);  
+        const colour = [data[1],data[2],data[3]];
+        colours[clientCount] = colour;
+        clientCount++;
+        //send all other players data to new join
+        wss.clients.forEach(client => {
+          if (client != ws) {
+            console.log("Sent Join to "+clients.get(client));
+            const col = colours[clients[client]];
+            safeSend(ws,Buffer.from([2,col[0],col[1],col[2]]));
+          }
+        });
+        JoinGame(ws,colour);
+        safeSend(ws,Buffer.from([3]));
       }
     }
   });
@@ -114,8 +120,8 @@ function randomMaxIndex(arr) {
   // Pick one index randomly
   return indices[Math.floor(Math.random() * indices.length)];
 }
-function JoinGame(ws) {
-  SendOthers(ws,Buffer.from([2]));
+function JoinGame(ws,colour) {
+  SendOthers(ws,Buffer.from([2,colour[0],colour[1],colour[2]]));
   safeSend(ws,Buffer.from([8]));
 }
 function Reset() {
