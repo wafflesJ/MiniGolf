@@ -85,12 +85,15 @@ wss.on('connection', function(ws) {
         const colour = [data[1],data[2],data[3]];
         console.log(colour);
         colours[clientCount] = colour;
+        console.log(colours[clientCount]);
+
         clientCount++;
         //send all other players data to new join
         wss.clients.forEach(client => {
           if (client != ws) {
             console.log("Sent Join to "+clients.get(client));
             const col = colours[clients[client]];
+            console.log(col);
             safeSend(ws,Buffer.from([2,col[0],col[1],col[2]]));
           }
         });
