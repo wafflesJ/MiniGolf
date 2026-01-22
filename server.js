@@ -107,6 +107,7 @@ wss.on('connection', function(ws) {
 
   ws.on('close', function() {
     console.log("Client left.");
+    console.log(clientMap.get(ws));
     SendAll(Buffer.from([5,clientMap.get(ws)]));
     clientCount--;
     readyCount=0;
